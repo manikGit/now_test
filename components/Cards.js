@@ -20,8 +20,8 @@ import '../app.css';
 import jsonData from './json/jsonData.json';
 
 const SortableItem = SortableElement(({ data, i }) =>
-  <List key={i} className="listStyle" style={{ paddingLeft: '2vh', paddingRight: '2vh' }}  >
-    <ListItem className="innerListStyle" style={{ outlineColor: '#293e40', padding: '0px' }} tabIndex="0" onDragOver={(e) => this.onDragOver(e, i)}
+  <List key={i}  className="listStyle" style={{ paddingLeft: '2vh', paddingRight: '2vh' }}  >
+    <ListItem className="innerListStyle" style={{ outlineColor: '#293e40', padding: '0px' }} tabIndex="0" ariaGrabbed="false" ariaHaspopup='true' role='listitem' onDragOver={(e) => this.onDragOver(e, i)} 
     >
       <Card draggable
         onDragStart={e => this.onDragStart(e, i)}
@@ -62,6 +62,24 @@ const SortableList = SortableContainer(({ items }) => {
 
   );
 });
+
+// class SortableList extends React.Component {
+//   render(){
+//     const { items } = this.props;
+//     return(
+
+//     <ul style={{ paddingLeft: "0px" }}>
+//       {items.map((value, index) => (
+//         <li>
+//           <SortableItem key={"key: " + index} index={index} data={value} />
+//         </li>
+//       ))}
+//     </ul>
+//     )
+//   }}
+
+
+
 
 class SortableComponent extends Component {
   constructor(props) {
