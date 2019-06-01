@@ -54,13 +54,12 @@ const SortableList = SortableContainer(({ items }) => {
 
     <ul style={{ paddingLeft: "0px" }}>
       {items.map((value, index) => (
-
-        <SortableItem key={"key: " + index} index={index} data={value} />
-
+        <li>
+          <SortableItem key={"key: " + index} index={index} data={value} />
+        </li>
       ))}
     </ul>
 
-    // </React.Fragment>
   );
 });
 
@@ -129,7 +128,7 @@ class SortableComponent extends Component {
     }
   }
   loadMoreCards() {
-    if (this.state.loadingState || this.state.inputValue !="") {
+    if (this.state.loadingState || this.state.inputValue != "") {
       return;
     }
     if (this.state.items.length < 10) {
@@ -160,15 +159,17 @@ class SortableComponent extends Component {
           <section className="sectionHeader">
           </section>
           <section className="searchBoxDiv">
+            <label aria-label="Search" style={{ color: 'white' }}>Search: </label>
             <input
+              aria-label="Search"
               id="searchBox"
-              label="Search..."
               placeholder="Type here to search"
               ref="searchText"
               margin="normal"
               value={this.state.inputValue}
               onChange={this.handleChange}
               tabIndex="0"
+              name="search"
 
             />
           </section>
