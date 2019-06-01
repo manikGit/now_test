@@ -2,7 +2,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import CardsReOrder from './components/CardsReOrder';
+import Cards from './components/Cards';
 
-ReactDOM.render(<CardsReOrder />, document.querySelector('#root'))
+ReactDOM.render(<Cards />, document.querySelector('#root'))
 
       

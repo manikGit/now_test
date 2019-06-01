@@ -84,7 +84,7 @@ class Cards extends Component {
       console.log("key pressed");
 
     });
-    this.refs.searchText.click();         
+    this.refs.searchText.click();
 
     console.log("componentDidMount called ");
     axios.get('https://uinames.com/api/?amount=10&region=germany&ext')
@@ -103,9 +103,13 @@ class Cards extends Component {
   }
   onDragStart = (e, index) => {
     this.draggedItem = this.state.cardData[index];
-    // e.dataTransfer.effectAllowed = "drag";
-    event.dataTransfer.setData('text/html', null)
+    this.indexDrag = index;
+    e.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', this.draggedItem)
     console.log("ondragstart");
+    //  event.target.style.visibility = 'hidden'; 
+    // event.target.style.display = 'block'; 
+    // event.target.style.cursor= 'grab'; 
   }
   onDragOver = (event, index) => {
     console.log("onDragOver");
@@ -113,6 +117,12 @@ class Cards extends Component {
     if (this.draggedItem === draggedOverItem) {
       return;
     }
+if (event.preventDefault) {
+  event.preventDefault();
+  }
+event.dataTransfer.dropEffect = 'move';
+    // event.target.style.transform = 'translate3d(0px,-' + event.target.height + ',0px)';
+    // event.target.style.transitionDuration = '300ms';
     // event.target.style.cursor = 'pointer'; 
     let items = this.state.cardData.filter(item => item !== this.draggedItem);
     items.splice(index, 0, this.draggedItem);
@@ -125,6 +135,7 @@ class Cards extends Component {
   }
 
   render() {
+
     return (
       <React.Fragment>
         <header className="headerStyle">
@@ -136,14 +147,14 @@ class Cards extends Component {
               label="Search..."
               placeholder="Type here to search"
               ref="searchText"
-              
+
               // className={classes.textField}
               margin="normal"
               value={this.state.inputValue}
               onChange={this.handleChange}
               tabIndex="0"
 
-            />
+            /> 
           </section>
         </header>
         <body>
