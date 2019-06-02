@@ -68,6 +68,29 @@ class CardsAccessible extends Component {
     };
     this.onDragEnd = this.onDragEnd.bind(this);
   }
+  handleChange = (event) => {
+    let inputVal = event.target.value;
+    this.setState({ inputValue: inputVal });
+    let items = this.state.initialData;
+    inputVal = inputVal.toLowerCase();
+    console.log("inputVal " + inputVal);
+    // console.log("items " + JSON.stringify(items).toLowerCase());
+    let filteredData = items.filter((data) => {
+      return ((JSON.stringify(data.name).indexOf(inputVal) > -1) || (JSON.stringify(data.surname).indexOf(inputVal) > -1)
+        || (JSON.stringify(data.email).indexOf(inputVal) > -1) || (JSON.stringify(data.gender).indexOf(inputVal) > -1)
+        || (JSON.stringify(data.age).indexOf(inputVal) > -1))
+    })
+    // JSON.stringify(data).toLowerCase().indexOf(inputVal.toLowerCase())
+    console.log("filteredData data ready");
+    this.setState({ items: filteredData })
+
+    if (inputVal == "") {
+      this.setState({ items: this.state.initialData });
+      this.setState({ loadingState: false });
+    }else{
+      this.setState({ loadingState: true });
+    }
+  }
   componentDidMount() {
     console.log("componentDidMount called ");
 
@@ -85,10 +108,15 @@ class CardsAccessible extends Component {
         this.setState({ initialData: user10data, items: [...this.state.items, ...user10data], loadingState: false })
       });
 
-    // this.refs.searchText.addEventListener("keyup", () => {
-    //   console.log("key pressed");
-    //   this.setState({ loadingState: false })
-    // });
+    this.refs.searchText.addEventListener("keyup", () => {
+      console.log("key pressed "+this.state.inputValue);
+      if (this.state.inputValue != "") {
+        this.setState({ loadingState: true });
+      }else{
+        this.setState({ loadingState: false });
+      }
+
+    });
 
     this.refs.iScroll.addEventListener("scroll", () => {
       if (this.refs.iScroll.scrollTop + this.refs.iScroll.clientHeight >= this.refs.iScroll.scrollHeight - 20) {
@@ -104,7 +132,7 @@ class CardsAccessible extends Component {
     if (this.state.dragging) {
       return;
     }
-    if (this.state.items.length < 10) {
+    if (this.state.items.length == 0) {
       return;
     }
     let cardShowNum = this.state.cardShowNum;
@@ -145,66 +173,88 @@ class CardsAccessible extends Component {
   // But in this example everything is just done in one place for simplicity
   render() {
     return (
-      <div ref="iScroll" className="divStyle">
-        <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd} >
-          <Droppable droppableId="droppable" >
-            {(provided, snapshot) => (
-              <div
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-                style={getListStyle(snapshot.isDraggingOver)}
+      <React.Fragment>
+        <header className="headerStyle">
+          <section className="sectionHeader">
+          </section>
+          <section className="searchBoxDiv">
+            <input
+              id="searchBox"
+              label="Search..."
+              placeholder="Type here to search"
+              ref="searchText"
 
-              >
-                {this.state.items.map((data, i) => (
-                  <Draggable key={`item-${i}`} draggableId={`item-${i}`} index={i}>
-                    {(provided, snapshot) => (
-                      <div
-                        // ref="iScroll"
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        style={getItemStyle(
-                          snapshot.isDragging,
-                          provided.draggableProps.style
-                        )}
+              // className={classes.textField}
+              margin="normal"
+              value={this.state.inputValue}
+              onChange={this.handleChange}
+              tabIndex="0"
 
-                      >
-                        <List key={i} className="listStyle" style={{ paddingLeft: '2vh', paddingRight: '2vh' }}  >
-                          <ListItem className="innerListStyle" style={{ outlineColor: '#293e40', padding: '0px' }} onDragOver={(e) => this.onDragOver(e, i)}
-                          >
-                            <Card draggable
-                              onDragStart={e => this.onDragStart(e, i)}
-                              onDragEnd={e => this.onDragEnd(e)}
+            />
+          </section>
+        </header>
+
+        <div ref="iScroll" className="divStyle">
+          <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd} >
+            <Droppable droppableId="droppable" >
+              {(provided, snapshot) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  style={getListStyle(snapshot.isDraggingOver)}
+
+                >
+                  {this.state.items.map((data, i) => (
+                    <Draggable key={`item-${i}`} draggableId={`item-${i}`} index={i}>
+                      {(provided, snapshot) => (
+                        <div
+                          // ref="iScroll"
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          style={getItemStyle(
+                            snapshot.isDragging,
+                            provided.draggableProps.style
+                          )}
+
+                        >
+                          <List key={i} className="listStyle" style={{ paddingLeft: '2vh', paddingRight: '2vh' }}  >
+                            <ListItem className="innerListStyle" style={{ outlineColor: '#293e40', padding: '0px' }} onDragOver={(e) => this.onDragOver(e, i)}
                             >
-                              <CardHeader
-                                avatar={
-                                  <Avatar alt={data.name} src={data.photo} />
-                                }
-                                title={data.name + " " + data.surname}
-                                subheader={data.email}
+                              <Card draggable
+                                onDragStart={e => this.onDragStart(e, i)}
+                                onDragEnd={e => this.onDragEnd(e)}
                               >
-                              </CardHeader>
-                              <CardContent>
-                                <Typography variant="body2" color="textSecondary" component="p">
-                                  Gender: {data.gender}
-                                </Typography>
-                                <Typography variant="body2" color="textSecondary" component="p">
-                                  Age: {data.age}
-                                </Typography>
-                              </CardContent>
-                            </Card>
-                          </ListItem>
-                        </List>
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
-      </div>
+                                <CardHeader
+                                  avatar={
+                                    <Avatar alt={data.name} src={data.photo} />
+                                  }
+                                  title={data.name + " " + data.surname}
+                                  subheader={data.email}
+                                >
+                                </CardHeader>
+                                <CardContent>
+                                  <Typography variant="body2" color="textSecondary" component="p">
+                                    Gender: {data.gender}
+                                  </Typography>
+                                  <Typography variant="body2" color="textSecondary" component="p">
+                                    Age: {data.age}
+                                  </Typography>
+                                </CardContent>
+                              </Card>
+                            </ListItem>
+                          </List>
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </div>
+      </React.Fragment>
     );
   }
 }
