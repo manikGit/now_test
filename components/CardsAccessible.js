@@ -63,7 +63,8 @@ class CardsAccessible extends Component {
       inputValue: '',
       initialData: [],
       cardData: [],
-      loadingState: false
+      loadingState: false,
+      dragging: false
     };
     this.onDragEnd = this.onDragEnd.bind(this);
   }
@@ -90,7 +91,6 @@ class CardsAccessible extends Component {
     // });
 
     this.refs.iScroll.addEventListener("scroll", () => {
-      console.log("Scrolling")
       if (this.refs.iScroll.scrollTop + this.refs.iScroll.clientHeight >= this.refs.iScroll.scrollHeight - 20) {
         this.loadMoreCards();
       }
@@ -101,7 +101,10 @@ class CardsAccessible extends Component {
     if (this.state.loadingState) {
       return;
     }
-    if (this.state.items.length == 0) {
+    if (this.state.dragging) {
+      return;
+    }
+    if (this.state.items.length < 10) {
       return;
     }
     let cardShowNum = this.state.cardShowNum;
@@ -122,11 +125,9 @@ class CardsAccessible extends Component {
     }, 500);
   }
   onDragEnd(result) {
-    // dropped outside the list
     if (!result.destination) {
       return;
     }
-
     const items = reorder(
       this.state.items,
       result.source.index,
@@ -137,9 +138,8 @@ class CardsAccessible extends Component {
       items
     });
   }
-  onDragStart() {
-    console.log("onDragStart ");
-    this.setState({ loadingState: false })
+  onDragStart = () => {
+    this.setState({ dragging: true })
   }
   // Normally you would want to split things out into separate components.
   // But in this example everything is just done in one place for simplicity
