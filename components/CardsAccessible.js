@@ -59,11 +59,43 @@ class CardsAccessible extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      items: getItems(10)
+      items: getItems(10),
+      inputValue: '',
+      initialData: [],
+      cardData: [],
+      loadingState: false
     };
     this.onDragEnd = this.onDragEnd.bind(this);
   }
+ componentDidMount() {
+    console.log("componentDidMount called ");
 
+    axios.get('https://uinames.com/api/?amount=10&region=germany&ext')
+      .then((response) => {
+        let data = response.data;
+        console.log("data loaded from  https://uinames.com");
+        this.setState({ initialData: data, items: data })
+      })
+      .catch((error) => {
+        console.log("erro " + error.message);
+        //uiname.com Resource Limit Reached
+        console.log("Loading from local json")
+        let user10data = jsonData.slice(0, 10)
+        this.setState({ initialData: user10data, items: [...this.state.items, ...user10data], loadingState: false })
+      });
+
+    // this.refs.searchText.addEventListener("keyup", () => {
+    //   console.log("key pressed");
+    //   this.setState({ loadingState: false })
+    // });
+
+    // this.refs.iScroll.addEventListener("scroll", () => {
+    //   if (this.refs.iScroll.scrollTop + this.refs.iScroll.clientHeight >= this.refs.iScroll.scrollHeight - 20) {
+    //     this.loadMoreCards();
+    //   }
+    // });
+
+  }
   onDragEnd(result) {
     // dropped outside the list
     if (!result.destination) {
@@ -94,7 +126,7 @@ class CardsAccessible extends Component {
               style={getListStyle(snapshot.isDraggingOver)}
             >
               {this.state.items.map((item, index) => (
-                <Draggable key={item.id} draggableId={item.id} index={index}>
+                <Draggable key={`item-${index}`} draggableId={`item-${index}`} index={index}>
                   {(provided, snapshot) => (
                     <div
                       ref={provided.innerRef}
@@ -105,7 +137,7 @@ class CardsAccessible extends Component {
                         provided.draggableProps.style
                       )}
                     >
-                      {item.content}
+                      {item.name}
                     </div>
                   )}
                 </Draggable>

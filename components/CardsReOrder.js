@@ -73,33 +73,33 @@ class Cards extends Component {
     }, 500);
   }
 
-  componentDidMount() {
-    this.refs.iScroll.addEventListener("scroll", () => {
-      if (this.refs.iScroll.scrollTop + this.refs.iScroll.clientHeight >= this.refs.iScroll.scrollHeight - 20) {
-        this.loadMoreCards();
-      }
-    });
-
-    this.refs.searchText.addEventListener("keyup", () => {
-      console.log("key pressed");
-
-    });
-    this.refs.searchText.click();
-
+   componentDidMount() {
     console.log("componentDidMount called ");
+
     axios.get('https://uinames.com/api/?amount=10&region=germany&ext')
       .then((response) => {
         let data = response.data;
         console.log("data loaded from  https://uinames.com");
-        this.setState({ initialData: data, cardData: data })
+        this.setState({ initialData: data, items: data })
       })
       .catch((error) => {
         console.log("erro " + error.message);
         //uiname.com Resource Limit Reached
         console.log("Loading from local json")
         let user10data = jsonData.slice(0, 10)
-        this.setState({ initialData: user10data, cardData: [...this.state.cardData, ...user10data], loadingState: false })
+        this.setState({ initialData: user10data, items: [...this.state.items, ...user10data], loadingState: false })
       });
+
+    this.refs.searchText.addEventListener("keyup", () => {
+      console.log("key pressed");
+      this.setState({ loadingState: false })
+    });
+
+    this.refs.iScroll.addEventListener("scroll", () => {
+      if (this.refs.iScroll.scrollTop + this.refs.iScroll.clientHeight >= this.refs.iScroll.scrollHeight - 20) {
+        this.loadMoreCards();
+      }
+    });
   }
   onDragStart = (e, index) => {
     this.draggedItem = this.state.cardData[index];
