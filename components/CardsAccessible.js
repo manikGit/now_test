@@ -39,20 +39,23 @@ const grid = 8;
 const getItemStyle = (isDragging, draggableStyle) => ({
   // some basic styles to make the items look a bit nicer
   userSelect: "none",
-  padding: grid * 2,
-  margin: `0 0 ${grid}px 0`,
-
+  // padding: grid * 2,
+  padding: '0px',
+  margin: isDragging ? '0px 0px 0px 20px' : `0 0 ${grid}px 0`,
+  //  marginLeft:'10px',
   // change background colour if dragging
-  background: isDragging ? "lightgreen" : "grey",
 
+  background: isDragging ? "transparent" : "transparent",
+  outlineColor: '#293E40',
   // styles we need to apply on draggables
   ...draggableStyle
 });
 
 const getListStyle = isDraggingOver => ({
-  background: isDraggingOver ? "lightblue" : "lightgrey",
+  background: isDraggingOver ? "transparent" : "#81B5A1",
   padding: grid,
-  width: '100%'
+  width: '100%',
+  marginLeft: '10px'
 });
 
 class CardsAccessible extends Component {
@@ -87,7 +90,7 @@ class CardsAccessible extends Component {
     if (inputVal == "") {
       this.setState({ items: this.state.initialData });
       this.setState({ loadingState: false });
-    }else{
+    } else {
       this.setState({ loadingState: true });
     }
   }
@@ -109,10 +112,10 @@ class CardsAccessible extends Component {
       });
 
     this.refs.searchText.addEventListener("keyup", () => {
-      console.log("key pressed "+this.state.inputValue);
+      console.log("key pressed " + this.state.inputValue);
       if (this.state.inputValue != "") {
         this.setState({ loadingState: true });
-      }else{
+      } else {
         this.setState({ loadingState: false });
       }
 
