@@ -89,20 +89,37 @@ class CardsAccessible extends Component {
     //   this.setState({ loadingState: false })
     // });
 
-    // this.refs.iScroll.addEventListener("scroll", () => {
-    //   if (this.refs.iScroll.scrollTop + this.refs.iScroll.clientHeight >= this.refs.iScroll.scrollHeight - 20) {
-    //     this.loadMoreCards();
-    //   }
-    // });
-    window.addEventListener('scroll', this.handleScroll);
+    this.refs.iScroll.addEventListener("scroll", () => {
+      if (this.refs.iScroll.scrollTop + this.refs.iScroll.clientHeight >= this.refs.iScroll.scrollHeight - 20) {
+        this.loadMoreCards();
+      }
+    });
+   
   }
-  handleScroll(e,ref) {
-    console.log("handleScroll1 "+(e.target.tagName));
-    console.log("ref "+ref);
-    // if (element.iScroll.scrollTop + element.iScroll.clientHeight >= element.iScroll.scrollHeight - 20) {
-    //       this.loadMoreCards();
-    //     }
+  loadMoreCards() {
+    if (this.state.loadingState) {
+      return;
     }
+    if (this.state.items.length == 0) {
+      return;
+    }
+    let cardShowNum = this.state.cardShowNum;
+    this.setState({ loadingState: true });
+    console.log("total cards: " + this.state.items.length)
+    setTimeout(() => {
+      axios.get('https://uinames.com/api/?amount=10&region=germany&ext')
+        .then((response) => {
+          let data = response.data;
+          console.log("loadMoreCards called ")
+          this.setState({ initialData: data, items: [...this.state.items, ...data], loadingState: false })
+        }).catch((err) => {
+          //uiname.com Resource Limit Reached
+          console.log("Loading from local json");
+          let user10data = jsonData.slice(0, 10)
+          this.setState({ initialData: user10data, items: [...this.state.items, ...user10data], loadingState: false })
+        });
+    }, 500);
+  }
     onDragEnd(result) {
       // dropped outside the list
       if (!result.destination) {
@@ -124,6 +141,7 @@ class CardsAccessible extends Component {
     // But in this example everything is just done in one place for simplicity
     render() {
       return (
+        <div  ref="iScroll">
         <DragDropContext onDragEnd={this.onDragEnd} >
           <Droppable droppableId="droppable" >
             {(provided, snapshot) => (
@@ -131,7 +149,7 @@ class CardsAccessible extends Component {
                 {...provided.droppableProps}
                 ref={provided.innerRef}
                 style={getListStyle(snapshot.isDraggingOver)}
-                onScroll={e => this.handleScroll(e,provided.innerRef)}
+                
               >
                 {this.state.items.map((data, i) => (
                   <Draggable key={`item-${i}`} draggableId={`item-${i}`} index={i}>
@@ -182,6 +200,7 @@ class CardsAccessible extends Component {
             )}
           </Droppable>
         </DragDropContext>
+        </div>
       );
     }
   }
