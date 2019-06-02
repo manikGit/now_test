@@ -146,7 +146,7 @@ event.dataTransfer.dropEffect = 'move';
               id="searchBox"
               label="Search..."
               placeholder="Type here to search"
-              ref="searchText"
+              ref="searchText" 
 
               // className={classes.textField}
               margin="normal"

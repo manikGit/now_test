@@ -52,7 +52,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 const getListStyle = isDraggingOver => ({
   background: isDraggingOver ? "lightblue" : "lightgrey",
   padding: grid,
-  width: 250
+  width: '100%'
 });
 
 class CardsAccessible extends Component {
@@ -67,7 +67,7 @@ class CardsAccessible extends Component {
     };
     this.onDragEnd = this.onDragEnd.bind(this);
   }
- componentDidMount() {
+  componentDidMount() {
     console.log("componentDidMount called ");
 
     axios.get('https://uinames.com/api/?amount=10&region=germany&ext')
@@ -94,94 +94,96 @@ class CardsAccessible extends Component {
     //     this.loadMoreCards();
     //   }
     // });
-
+    window.addEventListener('scroll', this.handleScroll);
   }
-  onDragEnd(result) {
-    // dropped outside the list
-    if (!result.destination) {
-      return;
+  handleScroll(e,ref) {
+    console.log("handleScroll1 "+(e.target.tagName));
+    console.log("ref "+ref);
+    // if (element.iScroll.scrollTop + element.iScroll.clientHeight >= element.iScroll.scrollHeight - 20) {
+    //       this.loadMoreCards();
+    //     }
+    }
+    onDragEnd(result) {
+      // dropped outside the list
+      if (!result.destination) {
+        return;
+      }
+
+      const items = reorder(
+        this.state.items,
+        result.source.index,
+        result.destination.index
+      );
+
+      this.setState({
+        items
+      });
     }
 
-    const items = reorder(
-      this.state.items,
-      result.source.index,
-      result.destination.index
-    );
+    // Normally you would want to split things out into separate components.
+    // But in this example everything is just done in one place for simplicity
+    render() {
+      return (
+        <DragDropContext onDragEnd={this.onDragEnd} >
+          <Droppable droppableId="droppable" >
+            {(provided, snapshot) => (
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                style={getListStyle(snapshot.isDraggingOver)}
+                onScroll={e => this.handleScroll(e,provided.innerRef)}
+              >
+                {this.state.items.map((data, i) => (
+                  <Draggable key={`item-${i}`} draggableId={`item-${i}`} index={i}>
+                    {(provided, snapshot) => (
+                      <div
+                        // ref="iScroll"
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        style={getItemStyle(
+                          snapshot.isDragging,
+                          provided.draggableProps.style
+                        )}
 
-    this.setState({
-      items
-    });
+                      >
+                        <List key={i} className="listStyle" style={{ paddingLeft: '2vh', paddingRight: '2vh' }}  >
+                          <ListItem className="innerListStyle" style={{ outlineColor: '#293e40', padding: '0px' }} onDragOver={(e) => this.onDragOver(e, i)}
+                          >
+                            <Card draggable
+                              onDragStart={e => this.onDragStart(e, i)}
+                              onDragEnd={e => this.onDragEnd(e)}
+                            >
+                              <CardHeader
+                                avatar={
+                                  <Avatar alt={data.name} src={data.photo} />
+                                }
+                                title={data.name + " " + data.surname}
+                                subheader={data.email}
+                              >
+                              </CardHeader>
+                              <CardContent>
+                                <Typography variant="body2" color="textSecondary" component="p">
+                                  Gender: {data.gender}
+                                </Typography>
+                                <Typography variant="body2" color="textSecondary" component="p">
+                                  Age: {data.age}
+                                </Typography>
+                              </CardContent>
+                            </Card>
+                          </ListItem>
+                        </List>
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      );
+    }
   }
 
-  // Normally you would want to split things out into separate components.
-  // But in this example everything is just done in one place for simplicity
-  render() {
-    return (
-      <DragDropContext onDragEnd={this.onDragEnd}>
-        <Droppable droppableId="droppable">
-          {(provided, snapshot) => (
-            <div
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-              style={getListStyle(snapshot.isDraggingOver)}
-            >
-              {this.state.items.map((data, i) => (
-                <Draggable key={`item-${i}`} draggableId={`item-${i}`} index={i}>
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      style={getItemStyle(
-                        snapshot.isDragging,
-                        provided.draggableProps.style
-                      )}
-                    >
-                      <List                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      style={getItemStyle(
-                        snapshot.isDragging,
-                        provided.draggableProps.style
-                      )}
-                      
-                       key={i} className="listStyle" style={{ paddingLeft: '2vh', paddingRight: '2vh' }}  >
-                <ListItem className="innerListStyle" style={{ outlineColor: '#293e40', padding: '0px' }} onDragOver={(e) => this.onDragOver(e, i)}
-                >
-                  <Card draggable
-                    onDragStart={e => this.onDragStart(e, i)}
-                    onDragEnd={e => this.onDragEnd(e)}
-                  >
-                    <CardHeader
-                      avatar={
-                        <Avatar alt={data.name} src={data.photo} />
-                      }
-                      title={data.name + " " + data.surname}
-                      subheader={data.email}
-                    >
-                    </CardHeader>
-                    <CardContent>
-                      <Typography variant="body2" color="textSecondary" component="p">
-                        Gender: {data.gender}
-                      </Typography>
-                      <Typography variant="body2" color="textSecondary" component="p">
-                        Age: {data.age}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                </ListItem>
-              </List>
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-    );
-  }
-}
-
-export default CardsAccessible;
+  export default CardsAccessible;
