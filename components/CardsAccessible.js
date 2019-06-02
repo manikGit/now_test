@@ -95,7 +95,7 @@ class CardsAccessible extends Component {
         this.loadMoreCards();
       }
     });
-   
+
   }
   loadMoreCards() {
     if (this.state.loadingState) {
@@ -121,36 +121,39 @@ class CardsAccessible extends Component {
         });
     }, 500);
   }
-    onDragEnd(result) {
-      // dropped outside the list
-      if (!result.destination) {
-        return;
-      }
-
-      const items = reorder(
-        this.state.items,
-        result.source.index,
-        result.destination.index
-      );
-
-      this.setState({
-        items
-      });
+  onDragEnd(result) {
+    // dropped outside the list
+    if (!result.destination) {
+      return;
     }
 
-    // Normally you would want to split things out into separate components.
-    // But in this example everything is just done in one place for simplicity
-    render() {
-      return (
-        <div  ref="iScroll" className="divStyle">
-        <DragDropContext onDragEnd={this.onDragEnd} >
+    const items = reorder(
+      this.state.items,
+      result.source.index,
+      result.destination.index
+    );
+
+    this.setState({
+      items
+    });
+  }
+  onDragStart() {
+    console.log("onDragStart ");
+    this.setState({ loadingState: false })
+  }
+  // Normally you would want to split things out into separate components.
+  // But in this example everything is just done in one place for simplicity
+  render() {
+    return (
+      <div ref="iScroll" className="divStyle">
+        <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd} >
           <Droppable droppableId="droppable" >
             {(provided, snapshot) => (
               <div
                 {...provided.droppableProps}
                 ref={provided.innerRef}
                 style={getListStyle(snapshot.isDraggingOver)}
-                
+
               >
                 {this.state.items.map((data, i) => (
                   <Draggable key={`item-${i}`} draggableId={`item-${i}`} index={i}>
@@ -201,9 +204,9 @@ class CardsAccessible extends Component {
             )}
           </Droppable>
         </DragDropContext>
-        </div>
-      );
-    }
+      </div>
+    );
   }
+}
 
-  export default CardsAccessible;
+export default CardsAccessible;
