@@ -90,6 +90,7 @@ class CardsAccessible extends Component {
     // });
 
     this.refs.iScroll.addEventListener("scroll", () => {
+      console.log("Scrolling")
       if (this.refs.iScroll.scrollTop + this.refs.iScroll.clientHeight >= this.refs.iScroll.scrollHeight - 20) {
         this.loadMoreCards();
       }
@@ -141,7 +142,7 @@ class CardsAccessible extends Component {
     // But in this example everything is just done in one place for simplicity
     render() {
       return (
-        <div  ref="iScroll">
+        <div  ref="iScroll" className="divStyle">
         <DragDropContext onDragEnd={this.onDragEnd} >
           <Droppable droppableId="droppable" >
             {(provided, snapshot) => (
