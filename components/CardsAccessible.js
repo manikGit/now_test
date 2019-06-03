@@ -42,9 +42,9 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   // padding: grid * 2,
   padding: '0px',
   margin: isDragging ? '0px 0px 0px 20px' : `0 0 ${grid}px 0`,
-  //  marginLeft:'10px',
-  // change background colour if dragging
 
+
+  // change background colour if dragging
   background: isDragging ? "transparent" : "transparent",
   outlineColor: '#293E40',
   // styles we need to apply on draggables
@@ -53,10 +53,13 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 
 const getListStyle = isDraggingOver => ({
   background: isDraggingOver ? "transparent" : "#81B5A1",
-  padding: grid,
+  // padding: '0px',
   width: '100%',
-  marginLeft: '10px'
+  // paddingLeft: '2vh',
+  // paddingRight: '2vh'
+
 });
+
 
 class CardsAccessible extends Component {
   constructor(props) {
@@ -111,15 +114,15 @@ class CardsAccessible extends Component {
         this.setState({ initialData: user10data, items: [...this.state.items, ...user10data], loadingState: false })
       });
 
-    this.refs.searchText.addEventListener("keyup", () => {
-      console.log("key pressed " + this.state.inputValue);
-      if (this.state.inputValue != "") {
-        this.setState({ loadingState: true });
-      } else {
-        this.setState({ loadingState: false });
-      }
+    // this.refs.searchText.addEventListener("keyup", () => {
+    //   console.log("key pressed " + this.state.inputValue);
+    //   if (this.state.inputValue != "") {
+    //     this.setState({ loadingState: true });
+    //   } else {
+    //     this.setState({ loadingState: false });
+    //   }
 
-    });
+    // });
 
     this.refs.iScroll.addEventListener("scroll", () => {
       if (this.refs.iScroll.scrollTop + this.refs.iScroll.clientHeight >= this.refs.iScroll.scrollHeight - 20) {
@@ -168,33 +171,42 @@ class CardsAccessible extends Component {
     this.setState({
       items
     });
+    this.setState({ dragging: false })
   }
   onDragStart = () => {
     this.setState({ dragging: true })
   }
   // Normally you would want to split things out into separate components.
   // But in this example everything is just done in one place for simplicity
+
   render() {
+
     return (
       <React.Fragment>
         <header className="headerStyle">
           <section className="sectionHeader">
           </section>
           <section className="searchBoxDiv">
+            <label style={{ color: 'white' }}> </label>
             <input
               id="searchBox"
               label="Search..."
               placeholder="Type here to search"
               ref="searchText"
-
-              // className={classes.textField}
+              className="search-box"
               margin="normal"
               value={this.state.inputValue}
               onChange={this.handleChange}
               tabIndex="0"
-
+              // autoFocus
+              aria-label="Type here to search"
             />
+
+            <button class="close-icon" type="reset">
+              
+            </button>
           </section>
+
         </header>
 
         <div ref="iScroll" className="divStyle">
@@ -208,7 +220,7 @@ class CardsAccessible extends Component {
 
                 >
                   {this.state.items.map((data, i) => (
-                    <Draggable key={`item-${i}`} draggableId={`item-${i}`} index={i}>
+                    <Draggable key={`item-${i}`} draggableId={`item-${i}`} index={i} aria-roledescription="Draggable item. Press space bar to lift">
                       {(provided, snapshot) => (
                         <div
                           // ref="iScroll"
@@ -221,7 +233,7 @@ class CardsAccessible extends Component {
                           )}
 
                         >
-                          <List key={i} className="listStyle" style={{ paddingLeft: '2vh', paddingRight: '2vh' }}  >
+                          <List key={i} className="listStyle" style={{ paddingLeft: '4vh', paddingRight: '4vh' }}  >
                             <ListItem className="innerListStyle" style={{ outlineColor: '#293e40', padding: '0px' }} onDragOver={(e) => this.onDragOver(e, i)}
                             >
                               <Card draggable
@@ -255,8 +267,11 @@ class CardsAccessible extends Component {
                 </div>
               )}
             </Droppable>
+
           </DragDropContext>
+
         </div>
+        <footer ></footer>
       </React.Fragment>
     );
   }
