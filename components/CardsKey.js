@@ -16,7 +16,7 @@ import jsonData from './json/jsonData.json';
 
 import '../app.css';
 
-class Cards extends Component {
+class CardsKey extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -223,4 +223,4 @@ class Cards extends Component {
   }
 }
 
-export default Cards;
+export default CardsKey;

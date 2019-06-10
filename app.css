@@ -106,3 +106,7 @@ outline-width: 2px;
 #searchBox:placeholder-shown + svg {
   visibility: visible;
 } */
+.focus{
+  background: #00c;
+	color: #fff;
+}
