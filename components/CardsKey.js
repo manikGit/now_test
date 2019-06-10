@@ -119,7 +119,7 @@ class CardsKey extends Component {
         }
         li.className = '';
         objFocus.focus();
-        objFocus.className = 'focus';
+        // objFocus.className = 'focus';
       }
 
     });
@@ -182,12 +182,14 @@ class CardsKey extends Component {
         </header>
         <body>
           <div ref="iScroll" className="divStyle" >
+          <ul className="listStyle" style={{ paddingLeft: '2vh', paddingRight: '2vh' }}>
             {this.state.cardData.map((data, i) => {
-              return <List key={i} className="listStyle" style={{ paddingLeft: '2vh', paddingRight: '2vh' }}  >
-                <ListItem className="innerListStyle" style={{ outlineColor: '#293e40', padding: '0px' }} tabIndex="0" onDragOver={(e) => this.onDragOver(e, i)}
-                  aria-dropeffect="move"
-                >
-                  <Card
+              return <li style={{ outlineColor: '#293e40', padding: '0px', listStyle: 'none', marginTop: '10px' }}
+              className="innerListStyle" 
+              tabIndex="0" onDragOver={(e) => this.onDragOver(e, i)}
+            //       aria-dropeffect="move"
+              >
+              <Card
                     draggable="true"
                     onDragStart={e => this.onDragStart(e, i)}
                     onDragEnd={e => this.onDragEnd(e)}
@@ -210,12 +212,14 @@ class CardsKey extends Component {
                       </Typography>
                     </CardContent>
                   </Card>
-                </ListItem>
-              </List>
+              
+              </li>
+
             }
             )
             }
-            {this.state.loadingState ? <p className="loading"> loading...</p> : ""}
+            
+            </ul>
           </div>
         </body>
       </React.Fragment>
@@ -224,3 +228,35 @@ class CardsKey extends Component {
 }
 
 export default CardsKey;
+
+
+
+            //   return <List key={i} className="listStyle" style={{ paddingLeft: '2vh', paddingRight: '2vh' }}  >
+            //     <ListItem className="innerListStyle" style={{ outlineColor: '#293e40', padding: '0px' }} tabIndex="0" onDragOver={(e) => this.onDragOver(e, i)}
+            //       aria-dropeffect="move"
+            //     >
+            //       <Card
+            //         draggable="true"
+            //         onDragStart={e => this.onDragStart(e, i)}
+            //         onDragEnd={e => this.onDragEnd(e)}
+            //         aria-grabbed="false"
+            //       >
+            //         <CardHeader
+            //           avatar={
+            //             <Avatar alt={data.name} src={data.photo} />
+            //           }
+            //           title={data.name + " " + data.surname}
+            //           subheader={data.email}
+            //         >
+            //         </CardHeader>
+            //         <CardContent>
+            //           <Typography variant="body2" color="textSecondary" component="p">
+            //             Gender: {data.gender}
+            //           </Typography>
+            //           <Typography variant="body2" color="textSecondary" component="p">
+            //             Age: {data.age}
+            //           </Typography>
+            //         </CardContent>
+            //       </Card>
+            //     </ListItem>
+            //   </List>
